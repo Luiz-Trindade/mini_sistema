@@ -18,9 +18,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Embutindo o build estático do Quasar
+// Atualizado de spa/* para pwa/*
 //
-//go:embed frontend/dist/spa/*
+//go:embed frontend/dist/pwa/*
 var staticFiles embed.FS
 
 func main() {
@@ -46,16 +46,16 @@ func main() {
 	// Registra as rotas da API (ex: /auth/login)
 	authHandler.RegisterRoutes(r)
 
-	// Isola o sub-filesystem apontando para a pasta do build do Quasar
-	distFS, err := fs.Sub(staticFiles, "frontend/dist/spa")
+	// Isola o sub-filesystem apontando para a pasta do build PWA do Quasar
+	distFS, err := fs.Sub(staticFiles, "frontend/dist/pwa")
 	if err != nil {
-		log.Fatalf("Erro ao carregar arquivos estáticos do Quasar: %v", err)
+		log.Fatalf("Erro ao carregar arquivos estáticos do Quasar PWA: %v", err)
 	}
 
-	// Pré-carrega o index.html em memória (evita redirecionamentos 301 e acelera a resposta)
+	// Pré-carrega o index.html em memória
 	indexHTML, err := fs.ReadFile(distFS, "index.html")
 	if err != nil {
-		log.Fatalf("Erro ao ler index.html do frontend: %v", err)
+		log.Fatalf("Erro ao ler index.html do frontend PWA: %v", err)
 	}
 
 	fileServer := http.FileServer(http.FS(distFS))
@@ -70,7 +70,7 @@ func main() {
 
 		path := strings.TrimPrefix(c.Request.URL.Path, "/")
 
-		// 2. Se for um arquivo físico válido no build (ex: JS, CSS, favicon, fontes)
+		// 2. Se for um arquivo físico válido no build PWA (ex: JS, CSS, manifest.json, sw.js)
 		if path != "" {
 			if f, err := distFS.Open(path); err == nil {
 				stat, statErr := f.Stat()
@@ -83,7 +83,7 @@ func main() {
 			}
 		}
 
-		// 3. Para a raiz "/" ou rotas do Vue Router (ex: /login), entrega o index.html diretamente com HTTP 200
+		// 3. Fallback para o index.html
 		c.Data(http.StatusOK, "text/html; charset=utf-8", indexHTML)
 	})
 

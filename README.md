@@ -1,164 +1,133 @@
-# Mini Sistema - Monorepo Fullstack (Go + Quasar/Vue 3)
+# 🚀 Mini Sistema (Go + Vue 3 Quasar PWA)
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Go Version](https://img.shields.io/badge/Go-1.22%2B-00ADD8?style=flat&logo=go)](https://golang.org/)
-[![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D?style=flat&logo=vuedotjs)](https://vuejs.org/)
-[![Quasar Framework](https://img.shields.io/badge/Quasar-v2.x-1976D2?style=flat&logo=quasar)](https://quasar.dev/)
-[![Bun](https://img.shields.io/badge/Bun-Latest-000000?style=flat&logo=bun)](https://bun.sh/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql)](https://www.postgresql.org/)
-[![PgBouncer](https://img.shields.io/badge/PgBouncer-Enabled-4169E1?style=flat&logo=postgresql)](https://www.pgbouncer.org/)
+![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
+![Quasar](https://img.shields.io/badge/Quasar-1976D2?style=for-the-badge&logo=quasar&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![License AGPLv3](https://img.shields.io/badge/License-AGPLv3-blue.svg?style=for-the-badge)
 
-Uma aplicação web fullstack de alto desempenho que combina a velocidade e a concorrência do **Go** com o rico ecossistema de componentes de interface do **Vue 3** e do **Quasar Framework**. Os arquivos do frontend são compilados em pacotes estáticos e incorporados diretamente ao executável Go via `//go:embed`, proporcionando uma distribuição autocontida em um único binário.
-
----
-
-## 🚀 Principais vantagens desta arquitetura
-
-### ⚡ Desempenho extremo e baixa latência
-
-- **Zero E/S de disco:** Os arquivos estáticos (`index.html`, JavaScript, CSS e imagens) são incorporados diretamente ao binário Go compilado (`//go:embed`) e servidos diretamente da RAM, com tempos de resposta em microssegundos.
-- **Baixo consumo de recursos:** A aplicação fullstack completa (frontend + API backend) consome apenas **15 MB–30 MB de RAM** durante a execução.
-- **Concorrência nativa:** O `net/http` e o `Gin` do Go lidam facilmente com dezenas de milhares de conexões simultâneas usando goroutines leves.
-
-### 🛡️ Implantação com mesma origem (sem sobrecarga de CORS)
-
-- Em produção, o frontend SPA e a API REST do backend compartilham exatamente o mesmo protocolo, domínio e porta (`http://localhost:8080`).
-- Elimina requisições preliminares `OPTIONS` do navegador, reduz viagens de ida e volta HTTP e dispensa o gerenciamento complexo de cabeçalhos CORS.
-
-### 📦 Implantação simples em um único binário
-
-- **Node.js ou Nginx não são necessários no servidor:** você não precisa do runtime Node, de servidores de desenvolvimento Webpack/Vite ou de configurações complexas do Nginx em produção.
-- Um único arquivo executável de aproximadamente 40 MB contém toda a interface do frontend, a camada de banco de dados GORM, a autenticação JWT e os endpoints da API.
-
-### 🔌 Pooling de banco de dados escalável com PgBouncer
-
-- Gerenciamento de conexões PostgreSQL de alta concorrência por meio do **PgBouncer** executado em modo de transação.
-- Minimiza a sobrecarga das conexões e otimiza o uso de memória durante picos de tráfego.
+Uma aplicação web & mobile moderna, ultrarrápida e resiliente que combina um backend em **Go (Gin + GORM)** com um frontend **Quasar (Vue 3)** compilado como **PWA (Progressive Web App)**, totalmente embutido no próprio binário executável via `//go:embed`.
 
 ---
 
-## 🛠️ Stack tecnológica
+## 💡 Por que esta Arquitetura?
 
-### Backend
+### 📲 Progressive Web App (PWA) Nativo
 
-- **Language:** Go (1.22+)
-- **Framework web:** [Gin Gonic](https://github.com/gin-gonic/gin)
-- **ORM:** [GORM](https://gorm.io/) (driver PostgreSQL com prepared statements desabilitadas para compatibilidade com o PgBouncer)
-- **Autenticação:** JWT (JSON Web Tokens) + Bcrypt
-- **Banco de dados:** PostgreSQL 16 + PgBouncer
+- **Instalável:** Pode ser instalado diretamente no smartphone (Android/iOS) ou Desktop como se fosse um aplicativo nativo.
+- **Recursos Offline:** Utiliza Service Workers (`sw.js`) e armazenamento em cache inteligente para manter a interface funcional e responsiva mesmo com oscilações de rede.
+- **Manifest Personalizado:** Experiência de tela cheia (_standalone_) sem barras de navegação do browser.
 
-### Frontend
+### ⚡ Performance Bruta & Baixo Consumo
 
-- **Framework:** [Vue 3](https://vuejs.org/) (Composition API / `<script setup>`)
-- **Ecossistema de UI:** [Quasar Framework v2](https://quasar.dev/)
-- **Runtime e bundler:** [Bun](https://bun.sh/) + Vite
-- **Cliente HTTP:** Axios (com interceptors dinâmicos de requisição/resposta)
-- **Visualização de dados:** [ECharts](https://echarts.apache.org/) + `vue-echarts`
+- **Zero I/O de Disco:** O build PWA (`frontend/dist/pwa`) é compilado diretamente dentro do binário Go. A interface é servida diretamente da memória RAM com respostas na casa dos **microsegundos**.
+- **Zero Overhead de Servidores Web:** Não necessita de Nginx ou Node.js em produção. O executável Go lida com os arquivos estáticos e os endpoints de API.
+- **Concorrência do Go:** Lida com milhares de requisições simultâneas utilizando _goroutines_ leves.
+
+### 🛢️ Banco de Dados Escalável
+
+- **PostgreSQL + PgBouncer:** Utiliza pooling de conexões em modo _transaction_ via PgBouncer na porta `6432` para suportar alto volume de conexões simultâneas sem sobrecarregar o banco.
 
 ---
 
-## 📁 Estrutura do projeto
+## 🛠️ Tecnologias Utilizadas
+
+- **Backend:** Go 1.22+, [Gin Web Framework](https://gin-gonic.com/), [GORM](https://gorm.io/)
+- **Frontend:** Vue 3 (Composition API), [Quasar Framework](https://quasar.dev/), Bun
+- **PWA:** Service Worker Workbox, App Manifest, Offline Caching
+- **Autenticação:** JWT com controle de versão de tokens (`token_version`) e Revogação
+- **Banco de Dados:** PostgreSQL 16+, PgBouncer
+- **Containerização:** Docker Compose
+
+---
+
+## 📁 Estrutura do Projeto
 
 ```text
 mini_sistema/
-├── auth/                 # Authentication domain (models, services, selectors, handlers)
-├── database/             # GORM & PostgreSQL / PgBouncer connection module
-├── frontend/             # Vue 3 + Quasar frontend (managed via Bun)
-│   ├── src/
-│   │   ├── boot/         # Quasar boot files (axios, etc.)
-│   │   ├── components/   # Reusable Vue components
-│   │   ├── pages/        # Application views (Index/Dashboard, Login)
-│   │   └── router/       # Vue Router configuration & Navigation Guards
-│   ├── quasar.config.js  # Quasar & Vite configuration (Proxy enabled for dev)
-│   └── dist/
-│       └── spa/          # Compiled static build target
-├── docker-compose.yml    # PostgreSQL and PgBouncer services
-├── main.go               # Go entrypoint (Gin routes + //go:embed static file server)
-├── go.mod
-└── go.sum
+├── auth/                 # Módulo de Autenticação (Models, Services, API, Selectors)
+├── database/             # Configuração GORM e PgBouncer
+├── frontend/             # Código-fonte Vue 3 / Quasar PWA
+│   ├── src/              # Páginas, Componentes e Boot Files
+│   ├── src-pwa/          # Configurações do Service Worker e Manifest
+│   └── dist/pwa/         # Build PWA gerado pelo Quasar
+├── main.go               # Entrypoint Go com //go:embed e servidor Gin
+├── docker-compose.yml    # Serviços Postgres e PgBouncer
+└── README.md
 ```
 
 ---
 
-## ⚙️ Variáveis de ambiente
+## 🚀 Como Rodar o Projeto
 
-O backend lê dinamicamente a configuração das variáveis de ambiente do sistema e usa valores locais padrão quando elas não estão definidas:
+### Pró-requisitos
 
-| Variável      | Descrição                       | Padrão          |
-| :------------ | :------------------------------ | :-------------- |
-| `DB_HOST`     | Endereço do host do banco       | `localhost`     |
-| `DB_PORT`     | Porta do PgBouncer / PostgreSQL | `6432`          |
-| `DB_USER`     | Usuário do banco                | `app_user`      |
-| `DB_PASSWORD` | Senha do banco                  | `app_password`  |
-| `DB_NAME`     | Nome do banco                   | `mini_sistema`  |
-| `DB_SSLMODE`  | Modo de conexão SSL             | `disable`       |
-| `DB_TIMEZONE` | Fuso horário do banco           | `America/Belem` |
+- **Go** (v1.22+)
+- **Bun** ou **Node.js**
+- **Docker & Docker Compose**
 
----
-
-## 🚦 Primeiros passos
-
-### Pré-requisitos
-
-- **Go** 1.22 or higher
-- **Bun** (or Node.js 18+)
-- **Docker & Docker Compose** (for PostgreSQL + PgBouncer)
-
-### 1. Clonar e configurar o banco de dados
+### 1. Iniciar a Infraestrutura de Banco de Dados
 
 ```bash
-git clone https://github.com/Luiz-Trindade/mini_sistema.git
-cd mini_sistema
-
-# Iniciar os serviços PostgreSQL e PgBouncer
 docker compose up -d
+
 ```
 
-### 2. Modo de desenvolvimento (Hot Reload / Live Reload)
+### 2. Desenvolvimento Local (com Live-Reload / HMR)
 
-Para desenvolvimento diário com atualizações instantâneas da interface (HMR):
+Rode o backend e o frontend em terminais separados:
 
-**Terminal 1 (Backend Go):**
+- **Terminal 1 (Backend Go):**
 
 ```bash
 go run main.go
+
 ```
 
-**Terminal 2 (Frontend Quasar com Bun):**
+_Servidor rodando em `http://localhost:8080_`
+
+- **Terminal 2 (Frontend Quasar PWA):**
 
 ```bash
 cd frontend
-bun install
-bun dev
+bun quasar dev -m pwa
+
 ```
 
-> O servidor de desenvolvimento Quasar é executado em `http://localhost:9000` e encaminha automaticamente as requisições `/auth` e `/api` para o backend Go em `http://localhost:8080`.
+_Interface rodando em `http://localhost:9000` com proxy automático de API para o Go._
 
 ---
 
-## 📦 Build de produção e geração do binário único
+## 📦 Compilação para Produção (Binário Único)
 
-Para compilar a aplicação inteira em um único executável:
+1. **Compilar o PWA do Frontend:**
 
 ```bash
-# 1. Compilar os arquivos estáticos da SPA no diretório frontend
 cd frontend
-bun run build
+bun quasar build -m pwa
 cd ..
 
-# 2. Compilar o binário Go unificado com os arquivos do frontend incorporados
-go build -o mini_sistema main.go
-
-# 3. Executar o binário independente
-./mini_sistema
 ```
 
-Acesse a aplicação de produção em `http://localhost:8080`.
+2. **Compilar o Executável Go:**
+
+```bash
+go build -o mini_sistema main.go
+
+```
+
+3. **Executar:**
+
+```bash
+./mini_sistema
+
+```
+
+Acesse `http://localhost:8080` para visualizar a PWA completa rodando a partir de um único arquivo binário!
 
 ---
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a **GNU Affero General Public License v3.0 (AGPL-3.0)**.
-
-> Você é livre para copiar, modificar e distribuir este software, desde que quaisquer trabalhos derivados ou serviços hospedados em rede baseados neste código também sejam licenciados sob a AGPL-3.0 e disponibilizados aos usuários pela rede.
+Este projeto está licenciado sob a licença **GNU Affero General Public License v3.0 (AGPL-3.0)**.
