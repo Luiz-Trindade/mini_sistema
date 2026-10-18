@@ -67,6 +67,7 @@ temp/
 .AppleDouble
 .LSOverride
 Thumbs.db
+.thumbs.db
 ehthumbs.db
 Desktop.ini
 
@@ -96,6 +97,7 @@ lerna-debug.log*
 
 # Builds e artefatos do Quasar/Vue
 .quasar/
+/quasar.config.*.temporary.compiled*
 .q-cache/
 .q-logs/
 .q-app/
@@ -106,6 +108,14 @@ lerna-debug.log*
 dist-ssr/
 storybook-static/
 *.vue.js
+
+# Cordova e Capacitor
+/src-cordova/node_modules/
+/src-cordova/platforms/
+/src-cordova/plugins/
+/src-cordova/www/
+/src-capacitor/www/
+/src-capacitor/node_modules/
 
 # Testes e relatórios frontend
 coverage/
